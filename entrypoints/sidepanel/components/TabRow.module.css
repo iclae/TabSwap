@@ -4,10 +4,35 @@
   gap: 8px;
   padding: 6px 10px;
   border-bottom: 1px solid var(--border);
+  position: relative;
+  cursor: grab;
 }
 
 .row:hover {
   background: var(--bg-hover);
+}
+
+.row[data-dragging] {
+  opacity: 0.4;
+}
+
+.row[data-edge='top']::before,
+.row[data-edge='bottom']::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--accent);
+  z-index: 1;
+}
+
+.row[data-edge='top']::before {
+  top: -1px;
+}
+
+.row[data-edge='bottom']::after {
+  bottom: -1px;
 }
 
 .row[data-state='asleep'] .title {

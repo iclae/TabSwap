@@ -1,6 +1,7 @@
 import { useTabs } from './hooks/useTabs';
 import { useStash } from './hooks/useStash';
 import { useSettings } from './hooks/useSettings';
+import { useDropMonitor } from './dnd/useDropMonitor';
 import { setSettings } from '@/src/storage/storage';
 import { OpenRegion } from './components/OpenRegion';
 import { StashRegion } from './components/StashRegion';
@@ -10,6 +11,7 @@ export function App() {
   const tabs = useTabs();
   const stash = useStash();
   const settings = useSettings();
+  useDropMonitor();
 
   return (
     <div className={styles.app}>

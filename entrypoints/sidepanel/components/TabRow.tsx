@@ -1,5 +1,6 @@
 import { activateTab, sleepTab, type TabView } from '@/src/services/tabs';
 import { stashTabs } from '@/src/services/stash-actions';
+import { useListItemDnd } from '../dnd/useListItemDnd';
 import styles from './TabRow.module.css';
 
 const STATE_LABEL: Record<TabView['state'], string> = {
@@ -12,9 +13,20 @@ export function TabRow({ tab }: { tab: TabView }) {
   // The browser cannot discard the active Tab, and an asleep Tab is already
   // discarded — Sleep is unavailable in both cases.
   const canSleep = tab.state === 'awake';
+  const { ref, edge, dragging } = useListItemDnd({
+    kind: 'open-tab',
+    tabId: tab.id,
+    index: tab.index,
+  });
 
   return (
-    <li className={styles.row} data-state={tab.state}>
+    <li
+      ref={ref}
+      className={styles.row}
+      data-state={tab.state}
+      data-edge={edge ?? undefined}
+      data-dragging={dragging || undefined}
+    >
       <img
         className={styles.favicon}
         src={tab.favIconUrl || undefined}
