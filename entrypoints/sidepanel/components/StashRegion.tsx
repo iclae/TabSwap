@@ -1,5 +1,6 @@
 import type { StashEntry } from '@/src/domain/stash';
 import { StashEntryRow } from './StashEntryRow';
+import { useRegionDropTarget } from '../dnd/useRegionDropTarget';
 import styles from './StashRegion.module.css';
 
 export function StashRegion({
@@ -11,8 +12,15 @@ export function StashRegion({
   collapsed: boolean;
   onToggleCollapse: () => void;
 }) {
+  // Accept Open-region Tabs dropped in to stash them.
+  const { ref, isOver } = useRegionDropTarget('stash-region', 'open-tab');
+
   return (
-    <section className={styles.region}>
+    <section
+      ref={ref}
+      className={styles.region}
+      data-dropover={isOver || undefined}
+    >
       <header className={styles.header}>
         <button
           className={styles.toggle}

@@ -9,6 +9,7 @@ import {
   type StashEntry,
 } from '@/src/domain/stash';
 import { getStash, setStash } from '@/src/storage/storage';
+import { browser } from 'wxt/browser';
 import { closeTab, openUrl } from './tabs';
 
 export interface ClosableTab extends StashableTab {
@@ -30,11 +31,33 @@ export async function stashTabs(tabs: ClosableTab[]): Promise<void> {
   }
 }
 
+/** Stash a single open Tab by id, looking up its metadata first. */
+export async function stashTabById(tabId: number): Promise<void> {
+  const tab = await browser.tabs.get(tabId);
+  await stashTabs([
+    {
+      id: tabId,
+      url: tab.url ?? '',
+      title: tab.title ?? '',
+      favIconUrl: tab.favIconUrl,
+    },
+  ]);
+}
+
 /** Pop restore: reopen the entry's Tab and remove the entry from the Stash. */
 export async function popRestore(entry: StashEntry): Promise<void> {
   await openUrl(entry.url);
   const current = await getStash();
   await setStash(removeEntry(current, entry.id));
+}
+
+/** Pop restore by entry id (used by drag-to-Open-region). */
+export async function popRestoreById(entryId: string): Promise<void> {
+  const current = await getStash();
+  const entry = current.find((e) => e.id === entryId);
+  if (!entry) return;
+  await openUrl(entry.url);
+  await setStash(removeEntry(current, entryId));
 }
 
 /** Copy restore: reopen the entry's Tab while keeping the entry in the Stash. */

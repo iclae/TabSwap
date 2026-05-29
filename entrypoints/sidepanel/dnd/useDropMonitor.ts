@@ -3,7 +3,11 @@ import { monitorForElements } from '@atlaskit/pragmatic-drag-and-drop/element/ad
 import { extractClosestEdge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge';
 import { isOpenTabDrag, isStashEntryDrag, reorderDestinationIndex } from './data';
 import { moveTab } from '@/src/services/tabs';
-import { reorderStash } from '@/src/services/stash-actions';
+import {
+  popRestoreById,
+  reorderStash,
+  stashTabById,
+} from '@/src/services/stash-actions';
 
 function edgeOf(data: Record<string, unknown>): 'top' | 'bottom' | null {
   const e = extractClosestEdge(data);
@@ -34,6 +38,18 @@ export function useDropMonitor() {
         if (isStashEntryDrag(src) && isStashEntryDrag(dst)) {
           const dest = reorderDestinationIndex(src.index, dst.index, edgeOf(dst));
           if (dest !== src.index) reorderStash(src.entryId, dest);
+          return;
+        }
+
+        // Cross-region: Open Tab dropped into the Stash region -> stash it.
+        if (isOpenTabDrag(src) && dst.kind === 'stash-region') {
+          stashTabById(src.tabId);
+          return;
+        }
+
+        // Cross-region: Stash entry dropped into the Open region -> pop restore.
+        if (isStashEntryDrag(src) && dst.kind === 'open-region') {
+          popRestoreById(src.entryId);
           return;
         }
       },
