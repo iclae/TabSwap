@@ -1,10 +1,28 @@
 import type { StashEntry } from '@/src/domain/stash';
 import { copyRestore, popRestore } from '@/src/services/stash-actions';
+import { useListItemDnd } from '../dnd/useListItemDnd';
 import styles from './StashEntryRow.module.css';
 
-export function StashEntryRow({ entry }: { entry: StashEntry }) {
+export function StashEntryRow({
+  entry,
+  index,
+}: {
+  entry: StashEntry;
+  index: number;
+}) {
+  const { ref, edge, dragging } = useListItemDnd({
+    kind: 'stash-entry',
+    entryId: entry.id,
+    index,
+  });
+
   return (
-    <li className={styles.row}>
+    <li
+      ref={ref}
+      className={styles.row}
+      data-edge={edge ?? undefined}
+      data-dragging={dragging || undefined}
+    >
       <img
         className={styles.favicon}
         src={entry.favIconUrl || undefined}

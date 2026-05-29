@@ -30,8 +30,8 @@ export function StashRegion({
           <p className={styles.empty}>Nothing stashed yet.</p>
         ) : (
           <ul className={styles.list}>
-            {entries.map((entry) => (
-              <StashEntryRow key={entry.id} entry={entry} />
+            {entries.map((entry, index) => (
+              <StashEntryRow key={entry.id} entry={entry} index={index} />
             ))}
           </ul>
         ))}

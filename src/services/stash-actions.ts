@@ -4,6 +4,7 @@ import {
   addEntries,
   isStashable,
   removeEntry,
+  reorder,
   type StashableTab,
   type StashEntry,
 } from '@/src/domain/stash';
@@ -39,4 +40,13 @@ export async function popRestore(entry: StashEntry): Promise<void> {
 /** Copy restore: reopen the entry's Tab while keeping the entry in the Stash. */
 export async function copyRestore(entry: StashEntry): Promise<void> {
   await openUrl(entry.url);
+}
+
+/** Move a Stash entry to `toIndex` in the flat list and persist the new order. */
+export async function reorderStash(
+  entryId: string,
+  toIndex: number,
+): Promise<void> {
+  const current = await getStash();
+  await setStash(reorder(current, entryId, toIndex));
 }

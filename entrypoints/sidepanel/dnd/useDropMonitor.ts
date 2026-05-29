@@ -1,8 +1,9 @@
 import { useEffect } from 'react';
 import { monitorForElements } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
 import { extractClosestEdge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge';
-import { isOpenTabDrag, reorderDestinationIndex } from './data';
+import { isOpenTabDrag, isStashEntryDrag, reorderDestinationIndex } from './data';
 import { moveTab } from '@/src/services/tabs';
+import { reorderStash } from '@/src/services/stash-actions';
 
 function edgeOf(data: Record<string, unknown>): 'top' | 'bottom' | null {
   const e = extractClosestEdge(data);
@@ -26,6 +27,13 @@ export function useDropMonitor() {
         if (isOpenTabDrag(src) && isOpenTabDrag(dst)) {
           const dest = reorderDestinationIndex(src.index, dst.index, edgeOf(dst));
           if (dest !== src.index) moveTab(src.tabId, dest);
+          return;
+        }
+
+        // Reorder within the Stash region -> persist the new order.
+        if (isStashEntryDrag(src) && isStashEntryDrag(dst)) {
+          const dest = reorderDestinationIndex(src.index, dst.index, edgeOf(dst));
+          if (dest !== src.index) reorderStash(src.entryId, dest);
           return;
         }
       },
