@@ -10,10 +10,6 @@
   background: var(--bg-hover);
 }
 
-.row[data-state='asleep'] .title {
-  color: var(--text-dim);
-}
-
 .favicon {
   width: 16px;
   height: 16px;
@@ -33,27 +29,6 @@
   text-overflow: ellipsis;
 }
 
-.badge {
-  flex: 0 0 auto;
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  padding: 1px 6px;
-  border-radius: 10px;
-  color: var(--text-dim);
-  border: 1px solid var(--border);
-}
-
-.badge[data-state='active'] {
-  color: var(--accent);
-  border-color: var(--accent);
-}
-
-.badge[data-state='asleep'] {
-  color: var(--text-dim);
-  opacity: 0.7;
-}
-
 .action {
   flex: 0 0 auto;
   background: none;
@@ -65,12 +40,7 @@
   opacity: 0.65;
 }
 
-.action:hover:not(:disabled) {
-  background: var(--bg-elev);
+.action:hover {
+  background: var(--bg);
   opacity: 1;
-}
-
-.action:disabled {
-  opacity: 0.25;
-  cursor: not-allowed;
 }

@@ -23,6 +23,19 @@
   color: var(--text-dim);
 }
 
+.count {
+  font-size: 11px;
+  color: var(--text-dim);
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  flex: 1 1 auto;
+}
+
 .empty {
   margin: 0;
   padding: 8px 10px 14px;
