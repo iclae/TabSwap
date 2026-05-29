@@ -38,7 +38,7 @@ Terminology in this PRD follows the project glossary in `CONTEXT.md`; storage an
 19. As a user, I want one-click Stash to also stash Tabs that are already asleep, so that bulk-clearing catches everything I meant to put away.
 20. As a user, I want Auto-sleep to sleep Tabs I haven't viewed for a configurable idle timeout, so that forgotten Tabs stop using memory on their own.
 21. As a user, I want Auto-sleep to run across all my windows, so that forgotten Tabs in background windows get reclaimed too.
-22. As a user, I want Auto-sleep to never touch my active Tab, pinned Tabs, audible Tabs, or Tabs with unsaved form input, so that it never disrupts something I care about.
+22. As a user, I want Auto-sleep to never touch my active Tab, pinned Tabs, or audible Tabs, so that it never disrupts something I care about.
 23. As a user, I want to configure a list of domains excluded from Auto-sleep, so that sites like my mail or music are never auto-slept.
 24. As a user, I want a quick way to add the current Tab's domain to the exclusion list, so that excluding a site takes one action.
 25. As a user, I want a per-Tab Keep-awake lock toggle, so that I can guarantee a specific Tab stays awake right now.
@@ -49,11 +49,13 @@ Terminology in this PRD follows the project glossary in `CONTEXT.md`; storage an
 
 ## Implementation Decisions
 
-**Platform**
+**Platform & stack**
 - Manifest V3 Chrome extension. Primary surface is the Side Panel API (requires Chrome 114+). The Open region is scoped to the side panel's own window; manual operations (Open region, drag, one-click toolbar) act on the current window only.
+- Built on WXT + React + TypeScript, Vitest (+ `@webext-core/fake-browser`) for tests, CSS Modules for styling, and Pragmatic drag-and-drop for all drag interactions (ADR-0003).
+- Drag interactions are commit-on-drop: nothing changes during a drag; on drop, the drop location decides between an in-region reorder and a cross-region move.
 
 **Modules** (build):
-- **Sleep policy** (deep, pure): given a Tab's state — active / pinned / audible / has-unsaved-form / Keep-awake-locked / domain-on-exclusion-list / idle time — decides whether the Tab is eligible for Auto-sleep. Includes domain-matching sub-logic (page domain equals or is a subdomain of a listed domain). No Chrome API access.
+- **Sleep policy** (deep, pure): given a Tab's state — active / pinned / audible / Keep-awake-locked / domain-on-exclusion-list / idle time — decides whether the Tab is eligible for Auto-sleep. Includes domain-matching sub-logic (page domain equals or is a subdomain of a listed domain). No Chrome API access.
 - **Stash domain** (deep, pure): list operations — add entries (allow duplicates, skip unstashable pages), maintain an explicit persisted order field, and the semantics of pop restore (reopen + remove) vs copy restore (reopen + keep). No Chrome API access.
 - **Storage** (deep): wraps `chrome.storage.local` behind a simple interface (`getStash / addEntries / removeEntry / reorder / getSettings / setSettings`). Both Stash entries and settings live in `chrome.storage.local`; nothing uses `chrome.storage.sync` (ADR-0001).
 - **Tab service** (thin adapter): wraps `chrome.tabs` / `chrome.windows` / `chrome.sidePanel` (query, discard, move, create, remove) so the logic modules can be tested against a mock.
@@ -76,7 +78,7 @@ Terminology in this PRD follows the project glossary in `CONTEXT.md`; storage an
 ## Testing Decisions
 
 - Good tests assert external behavior, not implementation details. The pure logic modules expose plain inputs → outputs and are the prime test targets.
-- **Sleep policy** is tested directly: table-driven cases over the exemption matrix (active, pinned, audible, unsaved-form, locked, excluded-domain, idle-vs-not) and the domain-matching rule (exact domain, subdomain, non-match).
+- **Sleep policy** is tested directly: table-driven cases over the exemption matrix (active, pinned, audible, locked, excluded-domain, idle-vs-not) and the domain-matching rule (exact domain, subdomain, non-match).
 - **Stash domain** is tested directly: add allows duplicates, add skips unstashable pages, ordering field is maintained on reorder, pop restore removes the entry, copy restore keeps it.
 - **Storage** is tested against a mocked `chrome.storage.local`, asserting round-trips for stash entries and settings.
 - Tab service, the background service worker, and the side panel UI are verified manually / via integration rather than unit tests in v1.
@@ -90,6 +92,7 @@ Terminology in this PRD follows the project glossary in `CONTEXT.md`; storage an
 - Persisting the Keep-awake lock across browser restart (ADR-0002).
 - Wildcard / pattern-based domain exclusions (v1 matches by domain + subdomain only).
 - Saving page scroll position, form state, or other live Tab state when stashing (only metadata is captured).
+- Exempting Tabs with unsaved form input from Auto-sleep — would require a broad `<all_urls>` content script; dropped from v1.
 - Browsers other than Chrome.
 
 ## Further Notes

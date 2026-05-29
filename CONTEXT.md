@@ -48,7 +48,7 @@ Reopening a Stash entry's Tab while keeping the entry in the Stash. A secondary 
 _Avoid_: Duplicate restore
 
 **Auto-sleep (定时休眠)**:
-Background rule that Sleeps a Tab after it has gone unviewed for a configured idle timeout (per-tab, based on last-viewed time). Runs across all windows (unlike manual operations, which are scoped to the current window). Always exempts the active tab, pinned tabs, audible tabs, and tabs with unsaved form input, plus any domain on the user's exclusion list (matched by the page domain equalling or being a subdomain of a listed domain).
+Background rule that Sleeps a Tab after it has gone unviewed for a configured idle timeout (per-tab, based on last-viewed time). Runs across all windows (unlike manual operations, which are scoped to the current window). Always exempts the active tab, pinned tabs, and audible tabs, plus any domain on the user's exclusion list (matched by the page domain equalling or being a subdomain of a listed domain).
 _Avoid_: Auto-discard, scheduled sleep
 
 **Keep-awake lock (禁止休眠)**:
