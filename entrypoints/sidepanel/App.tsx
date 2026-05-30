@@ -7,6 +7,7 @@ import { setSettings } from '@/src/storage/storage';
 import { Toolbar } from './components/Toolbar';
 import { OpenRegion } from './components/OpenRegion';
 import { StashRegion } from './components/StashRegion';
+import { UndoToast } from './components/UndoToast';
 import styles from './App.module.css';
 
 export function App() {
@@ -27,6 +28,7 @@ export function App() {
           setSettings({ stashCollapsed: !settings.stashCollapsed })
         }
       />
+      <UndoToast />
     </div>
   );
 }

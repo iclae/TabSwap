@@ -71,6 +71,15 @@ export async function deleteStashEntry(entryId: string): Promise<void> {
   await setStash(removeEntry(current, entryId));
 }
 
+/**
+ * Undo a Delete: reinsert the entry. It keeps its original `order`, and Delete
+ * leaves other entries' orders untouched, so it lands back in its old position.
+ */
+export async function restoreStashEntry(entry: StashEntry): Promise<void> {
+  const current = await getStash();
+  await setStash([...current, entry]);
+}
+
 /** Move a Stash entry to `toIndex` in the flat list and persist the new order. */
 export async function reorderStash(
   entryId: string,

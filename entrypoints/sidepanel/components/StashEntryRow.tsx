@@ -1,5 +1,6 @@
 import type { StashEntry } from '@/src/domain/stash';
-import { copyRestore, deleteStashEntry, popRestore } from '@/src/services/stash-actions';
+import { copyRestore, popRestore } from '@/src/services/stash-actions';
+import { deleteStashEntryWithUndo } from '../undo/actions';
 import { useListItemDnd } from '../dnd/useListItemDnd';
 import { ArrowSquareOut, Trash } from '@phosphor-icons/react';
 import styles from './StashEntryRow.module.css';
@@ -48,8 +49,8 @@ export function StashEntryRow({
         <button
           className={styles.action}
           data-danger
-          title="Delete from stash (cannot be undone)"
-          onClick={() => deleteStashEntry(entry.id)}
+          title="Delete from stash"
+          onClick={() => deleteStashEntryWithUndo(entry)}
         >
           <Trash size={13} weight="regular" />
         </button>

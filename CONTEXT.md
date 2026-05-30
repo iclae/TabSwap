@@ -28,7 +28,7 @@ Closing a real Tab and persisting its metadata (URL, title, etc.) into the exten
 _Avoid_: Save, archive, park
 
 **Close (关闭)**:
-Closing a real Tab without persisting anything — the tab simply leaves the tab strip via `chrome.tabs.remove()`. Distinct from Stash, which closes *and* persists; nothing is recoverable through the extension afterward. An Open-region per-Tab action.
+Closing a real Tab without persisting anything — the tab simply leaves the tab strip via `chrome.tabs.remove()`. Distinct from Stash, which closes *and* persists; once the Undo toast window passes nothing is recoverable through the extension. An Open-region per-Tab action.
 _Avoid_: Remove, delete (reserve Delete for Stash entries)
 
 **Open region (当前打开区域)**:
@@ -52,7 +52,7 @@ Reopening a Stash entry's Tab while keeping the entry in the Stash. A secondary 
 _Avoid_: Duplicate restore
 
 **Delete (删除)**:
-Removing a Stash entry from the Stash without reopening its Tab. The Stash-region counterpart to Close; the persisted metadata is discarded for good. Distinct from Pop restore, which also removes the entry but reopens its Tab first.
+Removing a Stash entry from the Stash without reopening its Tab. The Stash-region counterpart to Close; the persisted metadata is discarded for good once the Undo toast window passes. Distinct from Pop restore, which also removes the entry but reopens its Tab first.
 _Avoid_: Remove, close (reserve Close for real Tabs)
 
 **Auto-sleep (定时休眠)**:
@@ -62,3 +62,7 @@ _Avoid_: Auto-discard, scheduled sleep
 **Keep-awake lock (禁止休眠)**:
 A per-Tab toggle on the Tab's entry that prevents the Tab from being slept by any path — auto-sleep, manual single-sleep, and one-click sleep-others all skip it. Does not affect stashing. Session-only: held in memory and cleared on browser restart (see ADR-0002). Toggling again returns it to the normal rules.
 _Avoid_: Pin (collides with Chrome pinned tabs), freeze
+
+**Undo toast (撤销提示)**:
+A transient notification shown after a Close or Delete, offering to reverse that one action for a brief window. Single-slot: a new Close or Delete replaces any showing toast and commits the previous action permanently. Undoing a Close reopens the Tab's URL afresh (not a faithful session restore — see ADR-0004); undoing a Delete reinserts the entry at its original position.
+_Avoid_: Snackbar, notification

@@ -1,5 +1,6 @@
-import { activateTab, closeTab, sleepTab, type TabView } from '@/src/services/tabs';
+import { activateTab, sleepTab, type TabView } from '@/src/services/tabs';
 import { stashTabs } from '@/src/services/stash-actions';
+import { closeTabWithUndo } from '../undo/actions';
 import { toggleLock } from '@/src/lock/keep-awake';
 import { useListItemDnd } from '../dnd/useListItemDnd';
 import { Moon, Tray, Lock, LockOpen, X } from '@phosphor-icons/react';
@@ -83,7 +84,7 @@ export function TabRow({ tab, locked }: { tab: TabView; locked: boolean }) {
           className={styles.action}
           data-danger
           title="Close this tab"
-          onClick={() => closeTab(tab.id)}
+          onClick={() => closeTabWithUndo(tab)}
         >
           <X size={13} weight="regular" />
         </button>

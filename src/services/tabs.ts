@@ -58,3 +58,12 @@ export async function closeTab(tabId: number): Promise<void> {
 export async function openUrl(url: string): Promise<void> {
   await browser.tabs.create({ url, active: true });
 }
+
+/**
+ * Undo of a Close: reopen the URL at its original tab-strip index and focus it.
+ * A fresh tab, not a faithful session restore — see ADR-0004. The index is
+ * clamped by Chrome if the strip has since shrunk.
+ */
+export async function reopenTab(url: string, index: number): Promise<void> {
+  await browser.tabs.create({ url, index, active: true });
+}
