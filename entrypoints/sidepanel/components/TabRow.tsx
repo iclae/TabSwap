@@ -4,6 +4,7 @@ import { closeTabWithUndo } from '../undo/actions';
 import { toggleLock } from '@/src/lock/keep-awake';
 import { useListItemDnd } from '../dnd/useListItemDnd';
 import { Moon, Tray, Lock, LockOpen, X } from '@phosphor-icons/react';
+import { Favicon } from './Favicon';
 import styles from './TabRow.module.css';
 
 const STATE_LABEL: Record<TabView['state'], string> = {
@@ -30,12 +31,7 @@ export function TabRow({ tab, locked }: { tab: TabView; locked: boolean }) {
       data-edge={edge ?? undefined}
       data-dragging={dragging || undefined}
     >
-      <img
-        className={styles.favicon}
-        src={tab.favIconUrl || undefined}
-        alt=""
-        aria-hidden
-      />
+      <Favicon src={tab.favIconUrl} />
       <button
         className={styles.title}
         title={tab.title}
@@ -54,7 +50,7 @@ export function TabRow({ tab, locked }: { tab: TabView; locked: boolean }) {
           aria-pressed={locked}
           onClick={() => toggleLock(tab.id)}
         >
-          {locked ? <Lock size={13} weight="fill" /> : <LockOpen size={13} weight="regular" />}
+          {locked ? <Lock size={15} weight="fill" /> : <LockOpen size={15} weight="regular" />}
         </button>
         <button
           className={styles.action}
@@ -62,7 +58,7 @@ export function TabRow({ tab, locked }: { tab: TabView; locked: boolean }) {
           disabled={!canSleep}
           onClick={() => sleepTab(tab.id)}
         >
-          <Moon size={13} weight="regular" />
+          <Moon size={15} weight="regular" />
         </button>
         <button
           className={styles.action}
@@ -78,7 +74,7 @@ export function TabRow({ tab, locked }: { tab: TabView; locked: boolean }) {
             ])
           }
         >
-          <Tray size={13} weight="regular" />
+          <Tray size={15} weight="regular" />
         </button>
         <button
           className={styles.action}
@@ -86,7 +82,7 @@ export function TabRow({ tab, locked }: { tab: TabView; locked: boolean }) {
           title="Close this tab"
           onClick={() => closeTabWithUndo(tab)}
         >
-          <X size={13} weight="regular" />
+          <X size={15} weight="bold" />
         </button>
       </div>
     </li>

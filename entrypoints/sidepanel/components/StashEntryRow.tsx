@@ -3,6 +3,7 @@ import { copyRestore, popRestore } from '@/src/services/stash-actions';
 import { deleteStashEntryWithUndo } from '../undo/actions';
 import { useListItemDnd } from '../dnd/useListItemDnd';
 import { ArrowSquareOut, Trash } from '@phosphor-icons/react';
+import { Favicon } from './Favicon';
 import styles from './StashEntryRow.module.css';
 
 export function StashEntryRow({
@@ -25,12 +26,7 @@ export function StashEntryRow({
       data-edge={edge ?? undefined}
       data-dragging={dragging || undefined}
     >
-      <img
-        className={styles.favicon}
-        src={entry.favIconUrl || undefined}
-        alt=""
-        aria-hidden
-      />
+      <Favicon src={entry.favIconUrl} />
       <button
         className={styles.title}
         title={`Pop restore — ${entry.url}`}
@@ -44,7 +40,7 @@ export function StashEntryRow({
           title="Copy restore (reopen, keep in stash)"
           onClick={() => copyRestore(entry)}
         >
-          <ArrowSquareOut size={13} weight="regular" />
+          <ArrowSquareOut size={15} weight="regular" />
         </button>
         <button
           className={styles.action}
@@ -52,7 +48,7 @@ export function StashEntryRow({
           title="Delete from stash"
           onClick={() => deleteStashEntryWithUndo(entry)}
         >
-          <Trash size={13} weight="regular" />
+          <Trash size={15} weight="regular" />
         </button>
       </div>
     </li>
